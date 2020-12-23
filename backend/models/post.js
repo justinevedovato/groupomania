@@ -1,17 +1,21 @@
 const { Model, DataTypes } = require('sequelize')
 const db = require('../config/db')
-const Thread = require('./thread')
 const User = require('./user')
 
 class Post extends Model {}
 Post.init(
   {
-    body: DataTypes.STRING,
+    body: DataTypes.TEXT,
+    likes: DataTypes.INTEGER,
+    dislikes: DataTypes.INTEGER,
   },
   { sequelize: db, modelName: 'post' }
 )
-Thread.hasMany(Post)
-Post.belongsTo(Thread)
+
 Post.belongsTo(User)
+Post.hasMany(Post)
+User.hasMany(Post)
+Post.belongsToMany(User, { as: 'Likes', through: 'PostLikes' })
+User.belongsToMany(Post, { through: 'PostLikes' })
 
 module.exports = Post
