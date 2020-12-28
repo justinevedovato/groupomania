@@ -5,6 +5,7 @@ const sharp = require('sharp') // convert images
 const path = require('path')
 
 const User = require('../models/user')
+const Post = require('../models/post')
 
 const regexEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -28,23 +29,23 @@ exports.signup = (req, res, next) => {
     if (!req.body.password) {
       throw 'Le mot de passe est requis'
     }
-    if (req.file.size > 5000000) {
-      res.status(400).json({ message: 'le fichier est trop volumineux' })
-    } else {
-      const { filename: image } = req.file
-      sharp(req.file.path) // redimensionne les images trop larges
-        .resize(500)
-        .jpeg({ quality: 50 })
-        .toFile(path.resolve(req.file.destination, 'resized', image))
-    }
+    // if (req.file.size > 5000000) {
+    //   res.status(400).json({ message: 'le fichier est trop volumineux' })
+    // } else {
+    //   const { filename: image } = req.file
+    //   sharp(req.file.path) // redimensionne les images trop larges
+    //     .resize(500)
+    //     .jpeg({ quality: 50 })
+    //     .toFile(path.resolve(req.file.destination, 'resized', image))
+    // }
 
     bcrypt.hash(req.body.password, 10).then(async (hash) => {
       const user = await User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/resized/${
-          req.file.filename
-        }`,
+        // imageUrl: `${req.protocol}://${req.get('host')}/images/resized/${
+        //   req.file.filename
+        // }`,
         email: req.body.email,
         password: hash,
       })
@@ -81,5 +82,51 @@ exports.login = async (req, res, next) => {
     res.json({ id, firstName, lastName, email, token })
   } catch (error) {
     res.status(400).json({ error })
+  }
+}
+
+exports.modifyUser = async (req, res, next) => {
+  try {
+    const hash = await bcrypt.hash(req.body.password, 10)
+    await User.update(
+      {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: hash,
+      },
+      {
+        where: {
+          id: req.userId,
+        },
+      }
+    )
+    const updatedUser = await User.findOne({
+      where: { id: req.userId },
+    })
+    console.log(updatedUser.firstName)
+    const { id, firstName, lastName, email } = updatedUser.toJSON()
+    const token = signToken(id)
+    res.status(200).json({ id, firstName, lastName, email, token })
+  } catch (error) {
+    res.status(400).send({ error })
+    console.error(error)
+  }
+}
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const success = await User.destroy({
+      where: {
+        id: req.userId,
+      },
+    })
+    if (!success) {
+      throw 'Echec de suppression'
+    }
+    res.status(200).send()
+  } catch (error) {
+    res.status(400).send({ error })
+    console.error(error)
   }
 }

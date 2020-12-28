@@ -1,6 +1,11 @@
 const Post = require('../models/post')
 const User = require('../models/user')
 
+const safeUserModel = {
+  model: User,
+  attributes: ['firstName', 'lastName', 'imgUrl'], // Pour ne garder que les informations utiles pour la page, sans les informations sensibles
+}
+
 exports.createPost = async (req, res, next) => {
   try {
     const post = new Post({
@@ -37,7 +42,7 @@ exports.replyToPost = async (req, res, next) => {
 
 exports.modifyPost = async (req, res, next) => {
   try {
-    const updatedPost = await Post.update(
+    await Post.update(
       { body: req.body.body },
       {
         where: {
@@ -46,6 +51,12 @@ exports.modifyPost = async (req, res, next) => {
         },
       }
     )
+    const updatedPost = await Post.findOne({
+      where: {
+        id: req.params.id,
+        userId: req.userId,
+      },
+    })
     res.status(200).send(updatedPost.toJSON())
   } catch (error) {
     res.status(400).send({ error })
@@ -73,7 +84,10 @@ exports.deletePost = async (req, res, next) => {
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    let posts = await Post.findAll({ where: { postId: null } })
+    let posts = await Post.findAll({
+      where: { postId: null },
+      include: safeUserModel,
+    })
     posts = posts.map((p) => p.toJSON()) // Convertit chacun des posts en JSON avec Sequelize (map parce que c'est un array)
     res.send(posts)
   } catch (error) {
@@ -84,10 +98,6 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostAndReplies = async (req, res, next) => {
   try {
-    const safeUserModel = {
-      model: User,
-      attributes: ['firstName', 'lastName', 'imgUrl'], // Pour ne garder que les informations utiles pour la page, sans les informations sensibles
-    }
     const thread = await Post.findOne({
       where: { id: req.params.id },
       include: [
