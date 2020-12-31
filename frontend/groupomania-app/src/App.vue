@@ -78,6 +78,11 @@
                   >Accueil</router-link
                 >
                 <router-link
+                  to="/new"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >Nouveau post</router-link
+                >
+                <router-link
                   to="/account"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >Mon compte</router-link
@@ -86,7 +91,7 @@
                   href="#"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   @click.prevent="logout"
-                  >Logout</a
+                  >Déconnexion</a
                 >
               </div>
             </div>
@@ -113,6 +118,11 @@
             >Accueil</router-link
           >
           <router-link
+            to="/new"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Nouveau post</router-link
+          >
+          <router-link
             to="/account"
             class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
             >Mon compte</router-link
@@ -121,7 +131,7 @@
             href="#"
             class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
             @click.prevent="logout"
-            >Logout</a
+            >Déconnexion</a
           >
         </div>
       </div>

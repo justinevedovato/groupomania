@@ -9,6 +9,7 @@ const safeUserModel = {
 exports.createPost = async (req, res, next) => {
   try {
     const post = new Post({
+      title: req.body.title,
       body: req.body.body, // le texte contenu dans le post
       userId: req.userId, // l'ID de l'utilisateur ayant créé le post
       likes: 0,

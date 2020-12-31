@@ -5,6 +5,7 @@ const User = require('./user')
 class Post extends Model {}
 Post.init(
   {
+    title: DataTypes.TEXT,
     body: DataTypes.TEXT,
     likes: DataTypes.INTEGER,
     dislikes: DataTypes.INTEGER,

@@ -3,7 +3,11 @@
     <template v-if="allPosts.length">
       <Post v-for="item in allPosts" :key="item.id" :post="item" />
     </template>
-    <div v-else>Soyez le premier à poster un article !</div>
+    <div v-else>
+      <p class="text-center italic mt-4">
+        Soyez le premier à poster un article !
+      </p>
+    </div>
   </div>
 </template>
 

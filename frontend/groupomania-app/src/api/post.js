@@ -5,14 +5,14 @@ export default {
     return await api.get("post/", {}).json()
   },
 
-  // async signup(firstName, lastName, email, password) {
-  //   console.log(firstName, lastName, email, password)
-  //   return await api
-  //     .post("user/signup", {
-  //       json: { firstName, lastName, email, password },
-  //     })
-  //     .json()
-  // },
+  async createPost(title, body) {
+    console.log(title, body)
+    return await api
+      .post("post/", {
+        json: { title, body },
+      })
+      .json()
+  },
   // async modify(firstName, lastName, email, password) {
   //   console.log(firstName, lastName, email, password)
   //   return await api

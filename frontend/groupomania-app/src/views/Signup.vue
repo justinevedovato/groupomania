@@ -22,22 +22,6 @@
               <div class="grid grid-cols-6 gap-4">
                 <div class="col-span-6 sm:col-span-3">
                   <label
-                    for="last_name"
-                    class="block text-sm font-medium text-gray-700"
-                    >Nom</label
-                  >
-                  <input
-                    v-model="lastName"
-                    type="text"
-                    name="last_name"
-                    id="last_name"
-                    autocomplete="family-name"
-                    class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                  <label
                     for="first_name"
                     class="block text-sm font-medium text-gray-700"
                     >Prénom</label
@@ -48,6 +32,22 @@
                     name="first_name"
                     id="first_name"
                     autocomplete="given-name"
+                    class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="last_name"
+                    class="block text-sm font-medium text-gray-700"
+                    >Nom</label
+                  >
+                  <input
+                    v-model="lastName"
+                    type="text"
+                    name="last_name"
+                    id="last_name"
+                    autocomplete="family-name"
                     class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
