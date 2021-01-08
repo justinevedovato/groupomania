@@ -6,6 +6,7 @@
         <div class="sm:rounded-md sm:overflow-hidden">
           <div class="px-4 py-5 h-3/4 space-y-6 sm:p-6">
             <div class="col-span-6 sm:col-span-3">
+              <!-- Titre -->
               <input
                 v-model="title"
                 type="text"
@@ -15,6 +16,7 @@
                 class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
               />
             </div>
+            <!-- Corps de l'article -->
             <div>
               <div class="mt-1">
                 <textarea
@@ -30,7 +32,7 @@
           </div>
           <div class="px-4 py-3 text-right sm:px-6">
             <button
-              @click.prevent="newPost"
+              @click.prevent="modifyPost"
               type="submit"
               class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white"
               :class="{
@@ -39,7 +41,7 @@
               }"
               :disabled="!hasEnteredText"
             >
-              Publier
+              Valider la modification
             </button>
           </div>
         </div>
@@ -52,9 +54,10 @@
 import post from "@/api/post"
 
 export default {
-  name: "NewPost",
+  name: "ModifyPost",
   data() {
     return {
+      post: {},
       title: "",
       body: "",
     }
@@ -66,15 +69,26 @@ export default {
     },
   },
   methods: {
-    async newPost() {
+    async modifyPost() {
       this.error = ""
-      const res = await post.createPost(this.title, this.body)
+      const res = await post.modifyPost(
+        this.$route.params.id,
+        this.title,
+        this.body
+      )
       if (res.error) {
         this.error = res.error
         return
       }
-      this.$router.push("/") // Renvoie à la page d'accueil après publication
+      this.$router.push("/post/" + this.$route.params.id) // Renvoie à la page d'accueil après publication
     },
+  },
+  async created() {
+    // Récupère les infos du post pour pre-remplir les champs
+    const res = await post.getPost(this.$route.params.id)
+    this.post = res
+    this.title = this.post.title
+    this.body = this.post.body
   },
 }
 </script>

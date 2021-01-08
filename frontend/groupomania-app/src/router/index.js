@@ -17,11 +17,7 @@ const routes = [
     meta: {
       noLogin: true,
     },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Login.vue"),
+    component: () => import("../views/Login.vue"),
   },
   {
     path: "/signup",
@@ -41,6 +37,16 @@ const routes = [
     name: "NewPost",
     component: () => import("../views/NewPost.vue"),
   },
+  {
+    path: "/post/:id",
+    name: "Post",
+    component: () => import("../views/OnePost.vue"),
+  },
+  {
+    path: "/post/:id/modify",
+    name: "ModifyPost",
+    component: () => import("../views/ModifyPost.vue"),
+  },
 ]
 
 const router = new VueRouter({
@@ -49,6 +55,7 @@ const router = new VueRouter({
   routes,
 })
 
+// Renvoie sur la page de connexion si l'utilisateur n'est pas dans le store ( -> n'est pas ou plus connecté)
 router.beforeResolve(async (to, from, next) => {
   if (!to.meta.noLogin) {
     if (!Store.state.user) {

@@ -7,16 +7,14 @@ Post.init(
   {
     title: DataTypes.TEXT,
     body: DataTypes.TEXT,
-    likes: DataTypes.INTEGER,
-    dislikes: DataTypes.INTEGER,
   },
   { sequelize: db, modelName: 'post' }
 )
 
-Post.belongsTo(User)
-Post.hasMany(Post)
+Post.belongsTo(User, { onDelete: 'CASCADE' })
 User.hasMany(Post)
-Post.belongsToMany(User, { as: 'Likes', through: 'PostLikes' })
+Post.hasMany(Post, { onDelete: 'CASCADE' })
+Post.belongsToMany(User, { as: 'Likes', through: 'PostLikes' }) // Pour associer les tables 'User' et 'Post' quand un utilisateur Like un post
 User.belongsToMany(Post, { through: 'PostLikes' })
 
 module.exports = Post

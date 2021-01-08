@@ -1,9 +1,10 @@
 const Post = require('../models/post')
 const User = require('../models/user')
+const sequelize = require('sequelize')
 
 const safeUserModel = {
   model: User,
-  attributes: ['firstName', 'lastName', 'imgUrl'], // Pour ne garder que les informations utiles pour la page, sans les informations sensibles
+  attributes: ['id', 'firstName', 'lastName'], // Pour ne garder que les informations utiles pour la page, sans les informations sensibles
 }
 
 exports.createPost = async (req, res, next) => {
@@ -26,14 +27,16 @@ exports.createPost = async (req, res, next) => {
 exports.replyToPost = async (req, res, next) => {
   try {
     const postId = parseInt(req.params.id)
-    const reply = new Post({
+    const reply = await Post.create({
       body: req.body.body,
       userId: req.userId,
       postId: postId,
       likes: 0,
       dislikes: 0,
     })
-    await reply.save()
+    await reply.reload({
+      include: safeUserModel,
+    })
     res.status(201).send(reply.toJSON())
   } catch (error) {
     res.status(400).send({ error })
@@ -44,7 +47,7 @@ exports.replyToPost = async (req, res, next) => {
 exports.modifyPost = async (req, res, next) => {
   try {
     await Post.update(
-      { body: req.body.body },
+      { title: req.body.title, body: req.body.body },
       {
         where: {
           id: req.params.id,
@@ -87,9 +90,16 @@ exports.getAllPosts = async (req, res, next) => {
   try {
     let posts = await Post.findAll({
       where: { postId: null },
-      include: safeUserModel,
+      include: [safeUserModel, 'Likes'],
     })
-    posts = posts.map((p) => p.toJSON()) // Convertit chacun des posts en JSON avec Sequelize (map parce que c'est un array)
+    for (let i in posts) {
+      const p = posts[i]
+      const likes = await p.countLikes()
+      const post = p.toJSON()
+      delete post.Likes
+      post.likes = likes
+      posts[i] = post
+    }
     res.send(posts)
   } catch (error) {
     res.status(400).send({ error })
@@ -99,7 +109,7 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostAndReplies = async (req, res, next) => {
   try {
-    const thread = await Post.findOne({
+    let thread = await Post.findOne({
       where: { id: req.params.id },
       include: [
         {
@@ -108,9 +118,14 @@ exports.getPostAndReplies = async (req, res, next) => {
           separate: true, // La requête de ce Post doit se faire séparément pour obtenir les informations du User
         },
         safeUserModel,
+        'Likes',
       ],
     })
-    res.status(200).send(thread.toJSON())
+    const likes = await thread.countLikes()
+    thread = thread.toJSON()
+    delete thread.Likes
+    thread.likes = likes
+    res.status(200).send(thread)
   } catch (error) {
     console.log(error)
     res.status(400).send({ error })

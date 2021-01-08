@@ -98,7 +98,7 @@ export default {
       }
       console.log(res)
       this.$store.commit("setUser", res)
-      this.$router.push("/home")
+      this.$router.push("/")
     },
   },
 }
