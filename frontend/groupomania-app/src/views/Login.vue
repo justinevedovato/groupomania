@@ -96,7 +96,6 @@ export default {
         this.error = res.error
         return
       }
-      console.log(res)
       this.$store.commit("setUser", res)
       this.$router.push("/")
     },

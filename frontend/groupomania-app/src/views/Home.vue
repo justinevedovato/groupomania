@@ -1,5 +1,5 @@
 <template>
-  <div class="home mx-auto lg:w-2/3 xl:max-w-4xl" v-if="loadedData">
+  <div class="home mx-auto lg:w-3/4 xl:max-w-4xl" v-if="loadedData">
     <!-- Récupère les posts s'il y en a (-> si allPosts.length est 'true') -->
     <template v-if="allPosts.length">
       <Post

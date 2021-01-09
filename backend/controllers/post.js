@@ -1,6 +1,6 @@
 const Post = require('../models/post')
 const User = require('../models/user')
-const sequelize = require('sequelize')
+require('sequelize')
 
 const safeUserModel = {
   model: User,
@@ -90,6 +90,7 @@ exports.getAllPosts = async (req, res, next) => {
   try {
     let posts = await Post.findAll({
       where: { postId: null },
+      order: [['createdAt', 'DESC']], // Pour renvoyer les posts plus récents en premier
       include: [safeUserModel, 'Likes'],
     })
     for (let i in posts) {

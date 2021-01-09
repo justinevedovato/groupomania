@@ -9,12 +9,13 @@ import {
   faEdit,
   faChevronDown,
   faChevronUp,
+  faHeart,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 
 Vue.config.productionTip = false
 
-library.add(faTrashAlt, faEdit, faChevronDown, faChevronUp)
+library.add(faTrashAlt, faEdit, faChevronDown, faChevronUp, faHeart)
 
 Vue.component("font-awesome-icon", FontAwesomeIcon)
 

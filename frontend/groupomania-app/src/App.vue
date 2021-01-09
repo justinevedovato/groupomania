@@ -1,12 +1,12 @@
 <template>
-  <div id="app">
+  <div id="app" class="flex flex-col">
     <nav class="bg-gray-800" v-if="user">
       <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div class="relative flex items-center justify-between h-16">
           <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <!-- Bouton du menu pour version mobile -->
             <button
-              @click="isMenuOpen = !isMenuOpen"
+              @click="$store.commit('setMenu', !isMenuOpen)"
               class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               aria-expanded="false"
             >
@@ -63,7 +63,7 @@
           <div class="hidden sm:block ml-3 relative">
             <div>
               <button
-                @click="isMenuOpen = !isMenuOpen"
+                @click="$store.commit('setMenu', !isMenuOpen)"
                 class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
               ></button>
             </div>
@@ -104,10 +104,14 @@
             >
               <span>
                 Bonjour
-                <span class="font-medium">{{ user.firstName }}</span> !
+                <span class="font-medium capitalize">{{ user.firstName }}</span>
+                !
               </span>
               <img class="h-8 w-8" :src="imgUrl" alt="" />
-              <a href="#" @click.prevent="isMenuOpen = !isMenuOpen">
+              <a
+                href="#"
+                @click.prevent="$store.commit('setMenu', !isMenuOpen)"
+              >
                 <!-- Icône chevron up/down selon si le menu est ouvert ou fermé: -->
                 <font-awesome-icon :icon="menuIcon" />
 
@@ -149,20 +153,41 @@
       </div>
       <!-- Fin du menu mobile -->
     </nav>
-    <router-view />
+    <!-- Corps de la page -->
+    <main class="flex-grow">
+      <router-view />
+    </main>
+    <!-- Footer -->
+    <footer class="h-10 bg-gray-800 flex">
+      <div class="flex mx-auto text-sm text-gray-300">
+        <a
+          href="#"
+          @click.prevent
+          class="hover:bg-gray-700 hover:text-white px-3 py-1 my-auto rounded-md font-medium"
+        >
+          Mentions légales
+        </a>
+        <span class="my-auto">•</span>
+        <a
+          href="#"
+          @click.prevent
+          class="hover:bg-gray-700 hover:text-white px-3 py-1 my-auto rounded-md font-medium"
+        >
+          Nous contacter
+        </a>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      isMenuOpen: false,
-    }
-  },
   computed: {
     user() {
       return this.$store.state.user // Récupère les données du store pour afficher le message de bienvenue
+    },
+    isMenuOpen() {
+      return this.$store.state.isMenuOpen
     },
     imgUrl() {
       return `http://tinygraphs.com/labs/isogrids/hexa/${this.user.firstName}?theme=berrypie&numcolors=4&size=100&fmt=svg`
@@ -173,7 +198,6 @@ export default {
   },
   methods: {
     logout() {
-      this.isMenuOpen = false
       this.$store.commit("setUser") // Supprime l'utilisateur du store
       this.$router.push("/login")
     },

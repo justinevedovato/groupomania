@@ -67,4 +67,9 @@ router.beforeResolve(async (to, from, next) => {
   return next()
 })
 
+// Permet de fermer le menu chaque fois qu'on change de page (que ce soit en cliquant sur un des liens du menu, ou un lien en dehors du menu)
+router.afterEach(() => {
+  Store.commit("setMenu", false)
+})
+
 export default router

@@ -4,9 +4,6 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
-// const User = require('./models/user')
-// const Post = require('./models/post')
-
 const userRoutes = require('./routes/user')
 const postRoutes = require('./routes/posts')
 
@@ -16,10 +13,6 @@ app.use(cors())
 
 // Pour créer la base de données si elle n'existe pas
 db.sync()
-
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
 
 app.use(bodyParser.json())
 

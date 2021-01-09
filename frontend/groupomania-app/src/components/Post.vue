@@ -11,7 +11,7 @@
                 {{ post.title }}
               </h3>
             </router-link>
-            <span class="font-light text-sm  mb-3">
+            <span class="font-light text-sm capitalize mb-3">
               Par {{ post.user.firstName }} {{ post.user.lastName }}
             </span>
           </div>
@@ -19,23 +19,20 @@
 
         <!-- Bouton "J'aime" -->
         <div class="flex">
-          <button @click="addLike">
-            <img src="../../public/heart-icon.png" alt="" class="h-4 mr-2" />
-          </button>
+          <a href="#" @click.prevent="addLike">
+            <font-awesome-icon icon="heart" class="mt-4 mx-2 text-gray-400" />
+          </a>
           <span class="mt-3">{{ post.likes }}</span>
         </div>
       </div>
 
       <!-- Corps de l'article  -->
-      <p class="text-justify mt-4 mb-6 whitespace-pre-line">
+      <p class="text-justify mt-4 mb-6 whitespace-pre-line break-words">
         {{ post.body }}
       </p>
-      <div>
+      <div class="flex text-right">
         <!-- Boutons Modifier et Supprimer si l'utilisateur est l'auteur du post -->
-        <div
-          v-if="$store.state.user.id == post.userId"
-          class="ml-auto flex mt-2 text-gray-400"
-        >
+        <div v-if="$store.state.user.id == post.userId" class="text-gray-400">
           <router-link :to="{ name: 'ModifyPost', params: { id: post.id } }">
             <font-awesome-icon icon="edit" class="m-1 hover:text-gray-600" />
           </router-link>
@@ -48,7 +45,9 @@
         </div>
 
         <!-- Date et heure -->
-        <p class="time text-xs mt-2 text-right">{{ post.humanTime }}</p>
+        <p class="time text-xs mt-2 mb-1 ml-auto text-right">
+          {{ post.humanTime }}
+        </p>
       </div>
     </div>
   </div>
